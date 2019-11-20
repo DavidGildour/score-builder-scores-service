@@ -47,11 +47,11 @@ class UserScores(Resource):
             new_score.save_to_db()
 
             return {
-                'message': 'success',
+                'message': 'Successfully added new score.',
                 'content': new_score.json()
             }
         return {
-            'message': f'Name {data["name"]} was already used, try different name.',
+            'message': f'Name \"{data["name"]}\" was already used, try different name.',
         }, 409
 
 
@@ -125,3 +125,18 @@ class Score(Resource):
                 'message': f'Successfully removed score {score_name} from the database.'
             }
         return cls.fail_response(score_name)
+
+
+class LatestScore(Resource):
+    @classmethod
+    def get(cls, user_id):
+        score = ScoreModel.get_latest(user_id)
+
+        if score:
+            return {
+                "message": "Successfully retrieved the latest score",
+                'content': score.json()
+            }
+        return {
+            "message": "No scores available for this user."
+        }, 404

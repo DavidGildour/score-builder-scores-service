@@ -53,3 +53,7 @@ class ScoreModel(db.Model):
     @classmethod
     def find_all_public(cls):
         return cls.query.filter_by(public=True).all()
+
+    @classmethod
+    def get_latest(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).order_by(ScoreModel.last_edit.desc()).first()
