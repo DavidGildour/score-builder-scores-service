@@ -10,8 +10,8 @@ class ScoreModel(db.Model):
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(256), default="Created with Score Builder.")
     notes = db.Column(db.JSON, nullable=False)
-    creation_date = db.Column(db.DateTime, default=datetime.now())
-    last_edit  = db.Column(db.DateTime, default=datetime.now())
+    creation_date = db.Column(db.DateTime)
+    last_edit  = db.Column(db.DateTime)
     public = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.String(22), nullable=False)
 
@@ -19,6 +19,8 @@ class ScoreModel(db.Model):
         self.name = name
         self.user_id = user_id
         self.notes = notes
+        self.creation_date = datetime.now()
+        self.last_edit = datetime.now()
         if description: self.description = description
         if public: self.public = public
 
