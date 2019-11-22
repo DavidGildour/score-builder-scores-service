@@ -18,7 +18,7 @@ def bool_type(data) -> bool:
     fucks up request bodies and does not preserve their intended types
     """
     if isinstance(data, bool): return data
-    return False if data == "False" else True
+    return data != "False"
 
 
 class UserScores(Resource):
@@ -72,9 +72,9 @@ class Score(Resource):
     parser.add_argument('notes', type=dict, help="Provided value is not JSON-like dictionary.")
 
     @staticmethod
-    def fail_response(score):
+    def fail_response(score_name):
         return {
-            'message': f'Score {score} does not exist for this user',
+            'message': f'Score \"{score_name}\" does not exist for this user',
         }, 400
 
     @classmethod
@@ -98,7 +98,7 @@ class Score(Resource):
             return {
                 'message': 'This name is already used. Try a different one.'
             }, 409
-        
+
         score = ScoreModel.find_by_name(user_id, score_name)
 
         if score:
@@ -109,7 +109,7 @@ class Score(Resource):
             score.last_edit = datetime.datetime.now()
             score.save_to_db()
             return {
-                'message': f'Successfully updated score {score_name}.',
+                'message': f'Successfully updated score \"{score_name}\".',
                 'content': score.json(),
             }
         return cls.fail_response(score_name)
@@ -122,7 +122,7 @@ class Score(Resource):
             score.remove_from_db()
 
             return {
-                'message': f'Successfully removed score {score_name} from the database.'
+                'message': f'Successfully removed score \"{score_name}\" from the database.'
             }
         return cls.fail_response(score_name)
 
