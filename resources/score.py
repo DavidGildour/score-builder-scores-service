@@ -54,6 +54,15 @@ class UserScores(Resource):
             'message': f'Name \"{data["name"]}\" was already used, try different name.',
         }, 409
 
+    @classmethod
+    def delete(cls, user_id):
+        for score in ScoreModel.find_by_user_id(user_id):
+            score.remove_from_db()
+
+        return {
+            'message': f'Successfully deleted all scores for user \"{user_id}\".'
+        }
+
 
 class PublicScores(Resource):
     @classmethod
